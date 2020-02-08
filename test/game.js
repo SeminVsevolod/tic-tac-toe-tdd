@@ -25,7 +25,7 @@ describe('Game', () => {
         const x = 1, y = 1;
         game.acceptUserMove(x, y);
         const board = game.getState();
-        expect(board[x][y]).to.equal(USER_MOVE_SYMBOL)
+        expect(board[x][y]).to.equal(USER_MOVE_SYMBOL);
     });
 
     it('Throws an exception if user moves in taken cell', () => {
@@ -56,5 +56,17 @@ describe('Game', () => {
         const history = game.getMoveHistory();
 
         expect(history).to.deep.equal([{turn: COMPUTER_NAME, x: 0, y: 0}]);
+    });
+
+    it('Game saves 1 user\'s move and 1 computer\'s move in history', () => {
+        const x = 1, y = 1;
+
+        game.acceptUserMove(x, y);
+        game.createComputerMove();
+        const history = game.getMoveHistory();
+
+        expect(history.length).to.equal(2);
+        expect(history[0].turn).to.equal(USER_NAME);
+        expect(history[1].turn).to.equal(COMPUTER_NAME);
     });
 });
