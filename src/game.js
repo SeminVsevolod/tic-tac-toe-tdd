@@ -26,6 +26,10 @@ export default class Game {
         })
     }
 
+    getMoveHistory() {
+
+    }
+
     _updateBoard(x, y, config = {}) {
         const {symbol = this._userMoveSymbol} = config;
         this._board[x][y] = symbol;
