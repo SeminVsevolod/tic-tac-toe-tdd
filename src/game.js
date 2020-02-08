@@ -18,10 +18,12 @@ export default class Game {
         if (!this._isCellFree(x,y)) {
             return this._throwException('cell is already taken');
         }
+        this._history.push({turn: 'user', x, y});
         this._updateBoard(x, y);
     }
 
     createComputerMove() {
+        this._history.push({turn: 'computer', x: 0, y: 0});
         this._updateBoard(0,0, {
             symbol: this._computerMoveSymbol
         })
