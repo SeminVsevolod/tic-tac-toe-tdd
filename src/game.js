@@ -1,5 +1,7 @@
 export default class Game {
     constructor() {
+        this._userName = 'user';
+        this._computerName = 'computer';
         this._userMoveSymbol = '×';
         this._computerMoveSymbol = 'o';
         this._history = [];
@@ -18,12 +20,12 @@ export default class Game {
         if (!this._isCellFree(x,y)) {
             return this._throwException('cell is already taken');
         }
-        this._history.push({turn: 'user', x, y});
+        this._updateHistory(this._userName, x, y);
         this._updateBoard(x, y);
     }
 
     createComputerMove() {
-        this._history.push({turn: 'computer', x: 0, y: 0});
+        this._updateHistory(this._computerName, 0, 0);
         this._updateBoard(0,0, {
             symbol: this._computerMoveSymbol
         })
@@ -36,6 +38,10 @@ export default class Game {
     _updateBoard(x, y, config = {}) {
         const {symbol = this._userMoveSymbol} = config;
         this._board[x][y] = symbol;
+    }
+
+    _updateHistory(turn, x, y) {
+       this._history.push({turn, x, y});
     }
 
     _isCellFree(x, y) {
