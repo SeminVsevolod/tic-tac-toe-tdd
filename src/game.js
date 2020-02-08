@@ -1,6 +1,7 @@
 export default class Game {
     constructor() {
         this._userMoveSymbol = '×';
+        this._computerMoveSymbol = 'o';
         this._board = [
             ['', '', ''],
             ['', '', ''],
@@ -20,11 +21,14 @@ export default class Game {
     }
 
     createComputerMove() {
-
+        this._updateBoard(0,0, {
+            symbol: this._computerMoveSymbol
+        })
     }
 
-    _updateBoard(x, y) {
-        this._board[x][y] = this._userMoveSymbol;
+    _updateBoard(x, y, config = {}) {
+        const {symbol = this._userMoveSymbol} = config;
+        this._board[x][y] = symbol;
     }
 
     _isCellFree(x, y) {
