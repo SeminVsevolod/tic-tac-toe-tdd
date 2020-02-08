@@ -2,6 +2,7 @@ export default class Game {
     constructor() {
         this._userMoveSymbol = '×';
         this._computerMoveSymbol = 'o';
+        this._history = [{turn: 'user', x: 1, y: 1}];
         this._board = [
             ['', '', ''],
             ['', '', ''],
@@ -27,7 +28,7 @@ export default class Game {
     }
 
     getMoveHistory() {
-
+        return this._history;
     }
 
     _updateBoard(x, y, config = {}) {
