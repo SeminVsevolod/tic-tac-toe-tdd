@@ -1,9 +1,11 @@
 import {expect} from 'chai';
+import sinon from 'sinon';
 import Game from '../src/Game';
 
 const USER_NAME = 'user';
 const COMPUTER_NAME = 'computer';
 const USER_MOVE_SYMBOL = '×';
+const COMPUTER_MOVE_SYMBOL = 'o';
 const INITIAL_GAME_BOARD = [
     ['', '', ''],
     ['', '', ''],
@@ -35,13 +37,6 @@ describe('Game', () => {
         expect(func).to.throw('cell is already taken');
     });
 
-    it('Computer moves in top left cell', () => {
-        game.createComputerMove();
-        const board = game.getState();
-
-        expect(board[0][0]).to.equal('o');
-    });
-
     it('Game saves user\'s move in history', () => {
         const x = 1, y = 1;
 
@@ -52,10 +47,12 @@ describe('Game', () => {
     });
 
     it('Game saves computers\'s move in history', () => {
+        const stub = sinon.stub(Math, 'random').returns(0.5);
         game.createComputerMove();
         const history = game.getMoveHistory();
 
-        expect(history).to.deep.equal([{turn: COMPUTER_NAME, x: 0, y: 0}]);
+        expect(history).to.deep.equal([{turn: COMPUTER_NAME, x: 1, y: 1}]);
+        stub.restore();
     });
 
     it('Game saves 1 user\'s move and 1 computer\'s move in history', () => {
@@ -69,4 +66,14 @@ describe('Game', () => {
         expect(history[0].turn).to.equal(USER_NAME);
         expect(history[1].turn).to.equal(COMPUTER_NAME);
     });
+
+    it('Computer moves in randomly chosen cell', () => {
+        const stub = sinon.stub(Math, 'random').returns(0.5);
+
+        game.createComputerMove();
+        const board = game.getState();
+
+        expect(board[1][1]).to.equal(COMPUTER_MOVE_SYMBOL);
+        stub.restore();
+    })
 });
