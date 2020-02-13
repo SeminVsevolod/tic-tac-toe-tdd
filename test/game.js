@@ -75,5 +75,33 @@ describe('Game', () => {
 
         expect(board[1][1]).to.equal(COMPUTER_MOVE_SYMBOL);
         stub.restore();
-    })
+    });
+
+    it('Computer moves in cell that is not taken', () => {
+        // fill all the cells with user's symbol except last
+        for (let i = 0; i < 3; i++) {
+            for (let j = 0; j < 3; j++) {
+                if (i !== 2 || j !== 2) game.acceptUserMove(i, j);
+            }
+        }
+
+        game.createComputerMove();
+        const board = game.getState();
+
+        const userCount = board.reduce((result, row) => {
+            return row.reduce((count, el) => {
+                return el === USER_MOVE_SYMBOL ? ++count : count;
+            }, result);
+        }, 0);
+
+        const computerCount = board.reduce((result, row) => {
+            return row.reduce((count, el) => {
+                return el === COMPUTER_MOVE_SYMBOL ? ++count : count;
+            }, result);
+        }, 0);
+
+        expect(userCount).to.equal(8);
+        expect(computerCount).to.equal(1);
+        expect(board[2][2]).to.equal(computerMoveSymbol);
+    });
 });
