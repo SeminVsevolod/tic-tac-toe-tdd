@@ -31,4 +31,13 @@ describe('DOM controller', () => {
         expect(document.querySelectorAll('tr').length).to.equal(3);
         expect(document.querySelectorAll('td').length).to.equal(9);
     });
+
+    it('Remembers indices of last clicked cell', () => {
+        const domController = createInstance();
+
+        domController.createTable(3, 3);
+        document.querySelector('table td').click();
+
+        expect(domController.lastClickedIndices).to.deep.equal([0, 0]);
+    });
 });

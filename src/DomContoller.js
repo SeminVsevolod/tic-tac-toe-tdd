@@ -14,8 +14,13 @@ class DomController {
 
             for (let j = 0; j < cols; j++) {
                 const cell = row.insertCell(j);
+                cell.addEventListener('click', this._handleCellClick.bind(this, i, j));
             }
         }
+    }
+
+    _handleCellClick(row, col) {
+        this.lastClickedIndices = [row, col];
     }
 }
 
