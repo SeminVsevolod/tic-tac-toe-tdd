@@ -19,6 +19,10 @@ const createGame = (board) => new Game(board);
 global.window = dom.window;
 global.document = dom.window.document;
 
+beforeEach(() => {
+    window.alert = sinon.spy();
+    window.confirm = sinon.spy();
+});
 afterEach(() => {
     document.body.innerHTML = '';
 });
@@ -70,5 +74,16 @@ describe('DOM controller', () => {
         expect(document.querySelectorAll('table').length).to.equal(1);
         expect(document.querySelectorAll('tr').length).to.equal(3);
         expect(document.querySelectorAll('td').length).to.equal(9);
+    });
+
+    it('Gets an alert when user makes move in taken cell', () => {
+        const game = createGame();
+        const domController = createInstance(game);
+
+        domController.init();
+        document.querySelector('table td').click();
+        document.querySelector('table td').click();
+
+        expect(window.alert.called).to.be.true;
     });
 });
