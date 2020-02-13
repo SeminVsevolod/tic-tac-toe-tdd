@@ -1,6 +1,8 @@
 class DomController {
-    constructor(root) {
+    constructor({root, game}) {
+        this.game = game;
         this.rootNode = document.querySelector(root);
+        this.lastClickedIndices = [-1, -1];
     }
 
     createTable(rows = 0, cols = 0) {
