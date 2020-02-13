@@ -22,7 +22,7 @@ export default class Game {
     }
 
     acceptUserMove(x, y) {
-        if (!this._isCellFree(x,y)) {
+        if (!this._isCellFree(x, y)) {
             return this._throwException('cell is already taken');
         }
         this._updateHistory(this._userName, x, y);
@@ -34,9 +34,9 @@ export default class Game {
         const [x, y] = this._getFreeRandomCoordinates();
 
         this._updateHistory(this._computerName, x, y);
-        this._updateBoard(x,y, {
+        this._updateBoard(x, y, {
             symbol: this._computerMoveSymbol
-        })
+        });
     }
 
     isWinner(player) {
@@ -48,7 +48,7 @@ export default class Game {
             isEqual(i, 0) && isEqual(i, 1) && isEqual(i, 2) || res, false);
 
         const vertical = range.reduce((res, j) =>
-            isEqual(0, j) && isEqual( 1, j) && isEqual(  2, j) || res, false);
+            isEqual(0, j) && isEqual(1, j) && isEqual(2, j) || res, false);
 
         const diagonal = isEqual(0, 0) && isEqual(1, 1) && isEqual(2, 2)
             || isEqual(0, 2) && isEqual(1, 1) && isEqual(2, 0);
@@ -104,7 +104,7 @@ export default class Game {
     }
 
     _updateHistory(turn, x, y) {
-       this._history.push({turn, x, y});
+        this._history.push({turn, x, y});
     }
 
     _isCellFree(x, y) {
@@ -116,6 +116,6 @@ export default class Game {
     }
 
     _throwException(msg) {
-       throw new Error(msg);
+        throw new Error(msg);
     }
 }

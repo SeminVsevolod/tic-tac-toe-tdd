@@ -125,15 +125,6 @@ describe('Game', () => {
     });
 
     it('Checks if user won by horizontal', () => {
-        game.acceptUserMove(0, 0);
-        game.acceptUserMove(0, 1);
-        game.acceptUserMove(0, 2);
-        const userWon = game.isWinner(USER_NAME);
-
-        expect(userWon).to.equal(true);
-    });
-
-    it('Checks if user won by horizontal', () => {
         const game = new GameBuilder()
             .withBoardState(`
                 x x x
@@ -148,9 +139,9 @@ describe('Game', () => {
     it('Checks if user has won by vertical', () => {
         const game = new GameBuilder()
             .withBoardState(`
-        x . .
-        x . .
-        x . .`)
+                x . .
+                x . .
+                x . .`)
             .build();
 
         const userWon = game.isWinner(USER_NAME);
@@ -160,9 +151,9 @@ describe('Game', () => {
     it('Checks if user has won by main diagonal', () => {
         const game = new GameBuilder()
             .withBoardState(`
-        x . .
-        . x .
-        . . x`)
+                x . .
+                . x .
+                . . x`)
             .build();
 
         const userWon = game.isWinner(USER_NAME);
@@ -172,9 +163,9 @@ describe('Game', () => {
     it('Checks if user has won by secondary diagonal', () => {
         const game = new GameBuilder()
             .withBoardState(`
-        . . x
-        . x .
-        x . .`)
+                . . x
+                . x .
+                x . .`)
             .build();
 
         const userWon = game.isWinner(USER_NAME);
@@ -184,9 +175,9 @@ describe('Game', () => {
     it('Checks if there is winner', () => {
         const game = new GameBuilder()
             .withBoardState(`
-        x x x
-        . . .
-        . . .`)
+                x x x
+                . . .
+                . . .`)
             .build();
 
         const state = game.checkGame();
@@ -196,9 +187,9 @@ describe('Game', () => {
     it('Checks if there are no winners', () => {
         const game = new GameBuilder()
             .withBoardState(`
-        . x x
-        . . .
-        . . .`)
+                . x x
+                . . .
+                . . .`)
             .build();
 
         const state = game.checkGame();
