@@ -26,8 +26,19 @@ export default class Game {
     }
 
     createComputerMove() {
-        const x = this._getRandomCoordinate();
-        const y = this._getRandomCoordinate();
+        const freeCells = this._board.reduce((total, row) =>
+            row.reduce((count, el) =>
+                el === '' ? ++count : count, total), 0);
+
+        if (!freeCells) return;
+
+        let x = this._getRandomCoordinate();
+        let y = this._getRandomCoordinate();
+
+        while (!!this._board[x][y]) {
+            x = this._getRandomCoordinate();
+            y = this._getRandomCoordinate();
+        }
         this._updateHistory(this._computerName, x, y);
         this._updateBoard(x,y, {
             symbol: this._computerMoveSymbol

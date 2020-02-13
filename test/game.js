@@ -102,6 +102,6 @@ describe('Game', () => {
 
         expect(userCount).to.equal(8);
         expect(computerCount).to.equal(1);
-        expect(board[2][2]).to.equal(computerMoveSymbol);
+        expect(board[2][2]).to.equal(COMPUTER_MOVE_SYMBOL);
     });
 });
