@@ -5,6 +5,11 @@ class DomController {
         this.lastClickedIndices = [-1, -1];
     }
 
+    init() {
+        const size = this.game.getSize();
+        this.createTable(size, size);
+    }
+
     createTable(rows = 0, cols = 0) {
         const child = document.createElement('table');
         this.rootNode.appendChild(child);
@@ -23,6 +28,15 @@ class DomController {
 
     _handleCellClick(row, col) {
         this.lastClickedIndices = [row, col];
+        try {
+            this._makeUserMove(row, col);
+        } catch (e) {
+            window.alert(e.message);
+        }
+    }
+
+    _makeUserMove(row, col) {
+        this.game.acceptUserMove(row, col);
     }
 }
 
