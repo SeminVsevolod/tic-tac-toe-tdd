@@ -86,4 +86,15 @@ describe('DOM controller', () => {
 
         expect(window.alert.called).to.be.true;
     });
+
+    it('Redraws table on cell click', () => {
+        const game = createGame();
+        const domController = createInstance(game);
+
+        domController.init();
+        document.querySelector('table td').click();
+        const text = document.querySelector('table td').textContent;
+
+        expect(text).to.be.equal('×');
+    });
 });
