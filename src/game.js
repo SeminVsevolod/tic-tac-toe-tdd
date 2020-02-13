@@ -35,6 +35,10 @@ export default class Game {
         })
     }
 
+    isWinner(player) {
+        return false;
+    }
+
     _getFreeRandomCoordinates() {
         let x = this._getRandomCoordinate();
         let y = this._getRandomCoordinate();

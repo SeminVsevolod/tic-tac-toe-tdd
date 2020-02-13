@@ -122,4 +122,13 @@ describe('Game', () => {
         const func = game.createComputerMove.bind(game);
         expect(func).to.throw('no cells available');
     });
+
+    it('Checks if user won by horizontal', () => {
+        game.acceptUserMove(0, 0);
+        game.acceptUserMove(0, 1);
+        game.acceptUserMove(0, 2);
+        const userWon = game.isWinner(USER_NAME);
+
+        expect(userWon).to.equal(true);
+    });
 });
