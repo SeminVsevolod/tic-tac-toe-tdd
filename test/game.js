@@ -14,12 +14,14 @@ const INITIAL_GAME_BOARD = [
 
 /**
  * Fills all the cells with user's symbol except last
- * @param game
+ * @param game - {object}
+ * @param config - {object}
  */
-const fillCells = game => {
+const fillCells = (game, config={}) => {
+    const { x=-1, y=-1 } = config;
     for (let i = 0; i < 3; i++) {
         for (let j = 0; j < 3; j++) {
-            if (i !== 2 || j !== 2) game.acceptUserMove(i, j);
+            if (i !== x || j !== y) game.acceptUserMove(i, j)
         }
     }
 };
@@ -103,7 +105,7 @@ describe('Game', () => {
     });
 
     it('Computer moves in cell that is not taken', () => {
-        fillCells(game);
+        fillCells(game, {x: 2, y: 2});
 
         game.createComputerMove();
         const board = game.getState();
@@ -115,11 +117,7 @@ describe('Game', () => {
 
     it('If there are no free cells computer throws an exception', () => {
         // fill all the cells
-        for (let i = 0; i < 3; ++i) {
-            for (let j = 0; j < 3; ++j) {
-                game.acceptUserMove(i, j);
-            }
-        }
+        fillCells(game);
 
         const func = game.createComputerMove.bind(game);
         expect(func).to.throw('no cells available');
