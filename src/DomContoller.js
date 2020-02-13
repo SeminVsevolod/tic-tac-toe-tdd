@@ -8,3 +8,5 @@ class DomController {
         this.rootNode.appendChild(child);
     }
 }
+
+export default DomController;
