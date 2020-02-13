@@ -26,12 +26,16 @@ export default class Game {
     }
 
     createComputerMove() {
-        const freeCells = this._board.reduce((total, row) =>
-            row.reduce((count, el) =>
-                el === '' ? ++count : count, total), 0);
+        if (this._getFreeCellsCount() === 0) return false;
+        const [x, y] = this._getFreeRandomCoordinates();
 
-        if (!freeCells) return;
+        this._updateHistory(this._computerName, x, y);
+        this._updateBoard(x,y, {
+            symbol: this._computerMoveSymbol
+        })
+    }
 
+    _getFreeRandomCoordinates() {
         let x = this._getRandomCoordinate();
         let y = this._getRandomCoordinate();
 
@@ -39,10 +43,14 @@ export default class Game {
             x = this._getRandomCoordinate();
             y = this._getRandomCoordinate();
         }
-        this._updateHistory(this._computerName, x, y);
-        this._updateBoard(x,y, {
-            symbol: this._computerMoveSymbol
-        })
+
+        return [x, y];
+    }
+
+    _getFreeCellsCount() {
+        return this._board.reduce((total, row) =>
+            row.reduce((count, el) =>
+                el === '' ? ++count : count, total), 0);
     }
 
     getMoveHistory() {
