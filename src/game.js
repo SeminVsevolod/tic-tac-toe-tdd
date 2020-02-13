@@ -17,6 +17,10 @@ export default class Game {
         return this._board;
     }
 
+    getSize() {
+        return this._fieldSize;
+    }
+
     acceptUserMove(x, y) {
         if (!this._isCellFree(x,y)) {
             return this._throwException('cell is already taken');
@@ -36,7 +40,40 @@ export default class Game {
     }
 
     isWinner(player) {
-        return false;
+        const symbol = this._getSymbolForPlayer(player);
+        const range = [...Array(this._fieldSize).keys()];
+        const isEqual = this._checkCellEqual(symbol);
+
+        const horizontal = range.reduce((res, i) =>
+            isEqual(i, 0) && isEqual(i, 1) && isEqual(i, 2) || res, false);
+
+        const vertical = range.reduce((res, j) =>
+            isEqual(0, j) && isEqual( 1, j) && isEqual(  2, j) || res, false);
+
+        const diagonal = isEqual(0, 0) && isEqual(1, 1) && isEqual(2, 2)
+            || isEqual(0, 2) && isEqual(1, 1) && isEqual(2, 0);
+
+        return horizontal
+            || vertical
+            || diagonal;
+    }
+
+    checkGame() {
+        if (this.isWinner(this._userName)) return `${this._userName} won!`;
+        if (this.isWinner(this._computerName)) return `${this._computerName} won!`;
+        if (this._getFreeCellsCount() === 0) return `nobody won :–(`;
+        return 'continue';
+    }
+
+    _getSymbolForPlayer(player) {
+        return player === this._userName
+               ? this._userMoveSymbol
+               : this._computerMoveSymbol;
+    }
+
+    _checkCellEqual(symbol) {
+        return (i, j) =>
+            this._board[i][j] === symbol;
     }
 
     _getFreeRandomCoordinates() {

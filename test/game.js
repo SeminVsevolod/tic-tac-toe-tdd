@@ -1,6 +1,7 @@
 import {expect} from 'chai';
 import sinon from 'sinon';
 import Game from '../src/Game';
+import GameBuilder from './GameBuilder';
 
 const USER_NAME = 'user';
 const COMPUTER_NAME = 'computer';
@@ -17,11 +18,11 @@ const INITIAL_GAME_BOARD = [
  * @param game - {object}
  * @param config - {object}
  */
-const fillCells = (game, config={}) => {
-    const { x=-1, y=-1 } = config;
+const fillCells = (game, config = {}) => {
+    const {x = -1, y = -1} = config;
     for (let i = 0; i < 3; i++) {
         for (let j = 0; j < 3; j++) {
-            if (i !== x || j !== y) game.acceptUserMove(i, j)
+            if (i !== x || j !== y) game.acceptUserMove(i, j);
         }
     }
 };
@@ -35,8 +36,8 @@ const fillCells = (game, config={}) => {
 const count = (arr, symbol) =>
     arr.reduce((result, row) => {
         return row.reduce((count, el) => {
-            return el === symbol ? ++count : count
-        }, result)
+            return el === symbol ? ++count : count;
+        }, result);
     }, 0);
 
 let game;
@@ -130,5 +131,83 @@ describe('Game', () => {
         const userWon = game.isWinner(USER_NAME);
 
         expect(userWon).to.equal(true);
+    });
+
+    it('Checks if user won by horizontal', () => {
+        const game = new GameBuilder()
+            .withBoardState(`
+                x x x
+                . . .
+                . . .
+            `)
+            .build();
+        const userWon = game.isWinner(USER_NAME);
+        expect(userWon).to.equal(true);
+    });
+
+    it('Checks if user has won by vertical', () => {
+        const game = new GameBuilder()
+            .withBoardState(`
+        x . .
+        x . .
+        x . .`)
+            .build();
+
+        const userWon = game.isWinner(USER_NAME);
+        expect(userWon).to.equal(true);
+    });
+
+    it('Checks if user has won by main diagonal', () => {
+        const game = new GameBuilder()
+            .withBoardState(`
+        x . .
+        . x .
+        . . x`)
+            .build();
+
+        const userWon = game.isWinner(USER_NAME);
+        expect(userWon).to.equal(true);
+    });
+
+    it('Checks if user has won by secondary diagonal', () => {
+        const game = new GameBuilder()
+            .withBoardState(`
+        . . x
+        . x .
+        x . .`)
+            .build();
+
+        const userWon = game.isWinner(USER_NAME);
+        expect(userWon).to.equal(true);
+    });
+
+    it('Checks if there is winner', () => {
+        const game = new GameBuilder()
+            .withBoardState(`
+        x x x
+        . . .
+        . . .`)
+            .build();
+
+        const state = game.checkGame();
+        expect(state).to.equal(`${USER_NAME} won!`);
+    });
+
+    it('Checks if there are no winners', () => {
+        const game = new GameBuilder()
+            .withBoardState(`
+        . x x
+        . . .
+        . . .`)
+            .build();
+
+        const state = game.checkGame();
+        expect(state).to.equal(`continue`);
+    });
+
+    it('Returns game board size', () => {
+        const size = game.getSize();
+
+        expect(size).to.deep.equal(3);
     });
 });
