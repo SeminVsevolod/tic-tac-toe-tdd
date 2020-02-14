@@ -187,7 +187,7 @@ describe('Game', () => {
         expect(state).to.equal(`continue`);
     });
 
-    it('Computer moves in cell to prevent user wins by horizontal', () => {
+    it('Computer moves in cell to prevent user\'s win by horizontal', () => {
         const game = new GameBuilder()
             .withBoardState(`
                 . x x
@@ -201,12 +201,26 @@ describe('Game', () => {
         expect(board[0][0]).to.equal(COMPUTER_MOVE_SYMBOL);
     });
 
-    it('Computer moves in cell to prevent user wins by vertical', () => {
+    it('Computer moves in cell to prevent user\'s win by vertical', () => {
         const game = new GameBuilder()
             .withBoardState(`
                 . x .
                 . . .
                 . x .`)
+            .build();
+        game.createComputerMove();
+        const board = game.getState();
+        expect(count(board, USER_MOVE_SYMBOL)).to.equal(2);
+        expect(count(board, COMPUTER_MOVE_SYMBOL)).to.equal(1);
+        expect(board[1][1]).to.equal(COMPUTER_MOVE_SYMBOL);
+    });
+
+    it('Computer moves in cell to prevent user\'s win by main diagonal', () => {
+        const game = new GameBuilder()
+            .withBoardState(`
+                x . .
+                . . .
+                . . x`)
             .build();
         game.createComputerMove();
         const board = game.getState();
