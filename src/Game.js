@@ -42,12 +42,12 @@ export default class Game {
         if (this._getFreeCellsCount() === 0) return this._throwException('no cells available');
         let [x, y] = this._getFreeRandomCoordinates();
 
-        // prevent user win next move
-        if (this._checkIsUserWillWinNextMove()) {
-            [x, y] = this._getCoordinatesToPreventUserWin();
+        // prevent the user winnings on the next move
+        if (this._checkIsPlayerWillWinNextMove(this._userName)) {
+            [x, y] = this._getCoordinatesToPlayerWin(this._userName);
         }
 
-        this.acceptUserMove(x, y, COMPUTER_MOVE_SYMBOL)
+        this.acceptUserMove(x, y, this._computerMoveSymbol);
     }
 
     isWinner(player) {
@@ -87,47 +87,55 @@ export default class Game {
             this._board[i][j] === symbol;
     }
 
-    _checkIsUserWillWinNextMove() {
-        // check horizontally win
-        return this._board.some(this._callbackRowWithTwoUserMovesAndWithFreeCell)
-            || this._checkIsColumnWithTwoUserMovesAndWithFreeCell()
-            || this._checkIsMainDiagonalWithTwoUserMovesAndWithFreeCell()
-            || this._checkIsSecondaryDiagonalWithTwoUserMovesAndWithFreeCell();
+    _checkIsPlayerWillWinNextMove(player) {
+        // check can player win if his move is next
+        return this._checkIsRowWithTwoPlayerMovesAndWithFreeCell(player)
+            || this._checkIsColumnWithTwoPlayerMovesAndWithFreeCell(player)
+            || this._checkIsMainDiagonalWithTwoPlayerMovesAndWithFreeCell(player)
+            || this._checkIsSecondaryDiagonalWithTwoPlayerMovesAndWithFreeCell(player);
     }
 
-    _callbackRowWithTwoUserMovesAndWithFreeCell(row) {
-        return row.reduce((count, cell) => cell === USER_MOVE_SYMBOL ? ++count : count, 0) === 2
-        && row.reduce((count, cell) => cell === '' ? ++count : count, 0) === 1;
-    }
+    _checkIsRowWithTwoPlayerMovesAndWithFreeCell(player) {
+        const symbol = this._getSymbolForPlayer(player);
+        return this._board.some(row =>
+            row.reduce((count, cell) => cell === symbol ? ++count : count, 0) === 2
+            && row.reduce((count, cell) => cell === '' ? ++count : count, 0) === 1);
+    };
 
-    _checkIsColumnWithTwoUserMovesAndWithFreeCell() {
+    _checkIsColumnWithTwoPlayerMovesAndWithFreeCell(player) {
+        const symbol = this._getSymbolForPlayer(player);
         const range = this._getRange();
 
         return range.some((columnIndex) =>
             this._board.reduce((count, row) =>
-                row[columnIndex] === USER_MOVE_SYMBOL ? ++count : count, 0) === 2
+                row[columnIndex] === symbol ? ++count : count, 0) === 2
             && this._board.reduce((count, row) =>
                 row[columnIndex] === '' ? ++count : count, 0) === 1);
     }
 
-    _checkIsMainDiagonalWithTwoUserMovesAndWithFreeCell() {
+    _checkIsMainDiagonalWithTwoPlayerMovesAndWithFreeCell(player) {
+        const symbol = this._getSymbolForPlayer(player);
         const range = this._getRange();
 
-        return range.reduce((count, rangeIndex) => this._board[rangeIndex][rangeIndex] === USER_MOVE_SYMBOL ? ++count : count, 0) === 2
+        return range.reduce((count, rangeIndex) => this._board[rangeIndex][rangeIndex] === symbol ? ++count : count, 0) === 2
             && range.reduce((count, rangeIndex) => this._board[rangeIndex][rangeIndex] === '' ? ++count : count, 0) === 1;
     }
 
-    _checkIsSecondaryDiagonalWithTwoUserMovesAndWithFreeCell() {
+    _checkIsSecondaryDiagonalWithTwoPlayerMovesAndWithFreeCell(player) {
+        const symbol = this._getSymbolForPlayer(player);
         const range = this._getRange();
 
-        return range.reduce((count, rangeIndex) => this._board[rangeIndex][Math.abs(rangeIndex - 2)] === USER_MOVE_SYMBOL ? ++count : count, 0) === 2
+        return range.reduce((count, rangeIndex) => this._board[rangeIndex][Math.abs(rangeIndex - 2)] === symbol ? ++count : count, 0) === 2
             && range.reduce((count, rangeIndex) => this._board[rangeIndex][Math.abs(rangeIndex - 2)] === '' ? ++count : count, 0) === 1;
     }
 
-    _getCoordinatesToPreventUserWin() {
+    _getCoordinatesToPlayerWin(player) {
         try {
+            const symbol = this._getSymbolForPlayer(player);
             // prevent horizontally win
-            let x = this._board.findIndex(this._callbackRowWithTwoUserMovesAndWithFreeCell);
+            let x = this._board.findIndex(row =>
+                row.reduce((count, cell) => cell === symbol ? ++count : count, 0) === 2
+                && row.reduce((count, cell) => cell === '' ? ++count : count, 0) === 1);
             let y = null;
             if (~x) {
                 y = this._board[x].findIndex(cell => cell === '');
@@ -137,7 +145,7 @@ export default class Game {
 
                 y = range.findIndex((columnIndex) =>
                     this._board.reduce((count, row) =>
-                        row[columnIndex] === USER_MOVE_SYMBOL ? ++count : count, 0) === 2
+                        row[columnIndex] === symbol ? ++count : count, 0) === 2
                     && this._board.reduce((count, row) =>
                         row[columnIndex] === '' ? ++count : count, 0) === 1);
 
@@ -145,9 +153,9 @@ export default class Game {
                     x = this._board.findIndex(row => row[y] === '');
                 } else {
                     // prevent main diagonal win
-                    if (this._checkIsMainDiagonalWithTwoUserMovesAndWithFreeCell()) {
+                    if (this._checkIsMainDiagonalWithTwoPlayerMovesAndWithFreeCell(player)) {
                         x = y = range.findIndex((columnIndex) => this._board[columnIndex][columnIndex] === '');
-                    } else if (this._checkIsSecondaryDiagonalWithTwoUserMovesAndWithFreeCell()) {
+                    } else if (this._checkIsSecondaryDiagonalWithTwoPlayerMovesAndWithFreeCell(player)) {
                         // prevent secondary diagonal win
                         x = range.findIndex((columnIndex) => this._board[columnIndex][Math.abs(columnIndex - 2)] === '');
                         y = Math.abs(x - 2);
@@ -156,16 +164,16 @@ export default class Game {
             }
 
             if (x === -1 || x === null) {
-                this._throwException('cannot find row where user will win')
+                this._throwException('cannot find row where player will win');
             }
 
             if (y === -1 || y === null) {
-                this._throwException('cannot find cell where user will win')
+                this._throwException('cannot find cell where player will win');
             }
 
             return [x, y];
         } catch (e) {
-            console.warn('_getCoordinatesToPreventUserWin error->',e);
+            console.warn('_getCoordinatesToPlayerWin error->', e);
         }
     }
 
