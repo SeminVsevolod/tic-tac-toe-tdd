@@ -3,7 +3,7 @@ import sinon from 'sinon';
 import jsdom from 'jsdom';
 
 import Game from '../src/Game';
-import DomController from '../src/DomContoller';
+import DomController from '../src/DomController';
 
 const {JSDOM} = jsdom;
 const dom = new JSDOM('<html lang="en"><body id="root"></body></html>');
@@ -123,5 +123,39 @@ describe('DOM controller', () => {
 
         const status = document.querySelector('#status');
         expect(status.textContent).to.equal('user won!');
+    });
+
+    it('Creates clear button if someone wins', () => {
+        const game = createGame([
+            ['×', '×', ''],
+            ['', '', ''],
+            ['', '', '']
+        ]);
+
+        const domController = createInstance(game);
+
+        domController.init();
+        document.querySelector('table tr:nth-child(1) td:nth-child(3)').click();
+
+        const button = document.querySelectorAll('button');
+        expect(button.length).to.equal(1);
+    });
+
+
+    it('Clears table on button click', () => {
+        const game = createGame([
+            ['×', '×', ''],
+            ['', '', ''],
+            ['', '', '']
+        ]);
+
+        const domController = createInstance(game);
+
+        domController.init();
+        document.querySelector('table tr:nth-child(1) td:nth-child(3)').click();
+        document.querySelector('button').click();
+
+        expect(document.querySelector('table').textContent).to.equal('');
+        expect(document.querySelectorAll('button').length).to.equal(0);
     });
 });

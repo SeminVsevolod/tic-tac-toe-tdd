@@ -25,6 +25,15 @@ export default class Game {
         return this._fieldSize;
     }
 
+    getMoveHistory() {
+        return this._history;
+    }
+
+    clear() {
+        this._history = [];
+        this._board = cloneDeep(INITIAL_GAME_BOARD);
+    }
+
     acceptUserMove(x, y) {
         if (!this._isCellFree(x, y)) {
             return this._throwException('cell is already taken');
@@ -98,10 +107,6 @@ export default class Game {
                 el === '' ? ++count : count, total), 0);
     }
 
-    getMoveHistory() {
-        return this._history;
-    }
-
     _updateBoard(x, y, config = {}) {
         const {symbol = this._userMoveSymbol} = config;
         this._board[x][y] = symbol;
@@ -116,7 +121,7 @@ export default class Game {
     }
 
     _getRandomCoordinate() {
-        return Math.floor(Math.random() * (this._fieldSize - 0));
+        return Math.floor(Math.random() * (this._fieldSize));
     }
 
     _throwException(msg) {

@@ -1,5 +1,6 @@
 class DomController {
     constructor({root, game}) {
+        this.active = true;
         this.game = game;
         this.rootNode = document.querySelector(root);
         this.lastClickedIndices = [-1, -1];
@@ -44,12 +45,21 @@ class DomController {
         const state = this.game.checkGame();
 
         if (state !== 'continue') {
+            if (!this.active) return false;
+
             const status = this._createNode('div', {
                 text: state,
                 id: 'status'
             });
 
+            const clearButton = this._createNode('button', {
+                text: 'Play again',
+            });
+
+            clearButton.addEventListener('click', this.clear.bind(this));
             this.rootNode.appendChild(status);
+            this.rootNode.appendChild(clearButton);
+            this.active = false;
             return false;
         }
 
@@ -64,6 +74,13 @@ class DomController {
 
         if (!!id) node.id = id;
         return node;
+    }
+
+    clear() {
+        this.game.clear();
+        this.rootNode.innerHTML = '';
+        this.active = true;
+        this.init();
     }
 
     _makeUserMove(row, col) {
