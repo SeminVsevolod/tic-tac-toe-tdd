@@ -42,8 +42,14 @@ export default class Game {
         if (this._getFreeCellsCount() === 0) return this._throwException('no cells available');
         let [x, y] = this._getFreeRandomCoordinates();
 
-        // prevent the user winnings on the next move
-        if (this._checkIsPlayerWillWinNextMove(this._userName)) {
+        // check if computer can win on the next move
+        if (this._checkIsPlayerWillWinNextMove(this._computerName)) {
+            // computer move to win
+            [x, y] = this._getCoordinatesToPlayerWin(this._computerName);
+        }
+        // check if user can win on the next move
+        else if (this._checkIsPlayerWillWinNextMove(this._userName)) {
+            // computer move to prevent the user winnings on the next move
             [x, y] = this._getCoordinatesToPlayerWin(this._userName);
         }
 

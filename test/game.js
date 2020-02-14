@@ -252,13 +252,13 @@ describe('Game', () => {
             .withBoardState(`
                 . . .
                 x x .
-                o . o`)
+                o o .`)
             .build();
         game.createComputerMove();
         const board = game.getState();
         expect(count(board, USER_MOVE_SYMBOL)).to.equal(2);
         expect(count(board, COMPUTER_MOVE_SYMBOL)).to.equal(3);
-        expect(board[2][1]).to.equal(COMPUTER_MOVE_SYMBOL);
+        expect(board[2][2]).to.equal(COMPUTER_MOVE_SYMBOL);
         const state = game.checkGame();
         expect(state).to.equal(`${COMPUTER_NAME} won!`);
     });
