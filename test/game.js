@@ -186,7 +186,21 @@ describe('Game', () => {
         const state = game.checkGame();
         expect(state).to.equal(`continue`);
     });
-    
+
+    it('Computer moves in cell to prevent user wins by horizontal', () => {
+        const game = new GameBuilder()
+            .withBoardState(`
+                . x x
+                . . .
+                . . .`)
+            .build();
+        game.createComputerMove();
+        const board = game.getState();
+        expect(count(board, USER_MOVE_SYMBOL)).to.equal(2);
+        expect(count(board, COMPUTER_MOVE_SYMBOL)).to.equal(1);
+        expect(board[0][0]).to.equal(COMPUTER_MOVE_SYMBOL);
+    });
+
     it('Returns game board size', () => {
         const size = game.getSize();
 
