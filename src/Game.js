@@ -52,6 +52,10 @@ export default class Game {
             // computer move to prevent the user winnings on the next move
             [x, y] = this._getCoordinatesToPlayerWin(this._userName);
         }
+        // move to central cell if it possible
+        else if (this._board[1][1] !== this._userMoveSymbol && this._board[1][1] !== this._computerMoveSymbol) {
+            [x, y] = [1, 1]
+        }
 
         this.acceptUserMove(x, y, this._computerMoveSymbol);
     }

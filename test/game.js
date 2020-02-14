@@ -311,6 +311,20 @@ describe('Game', () => {
         expect(state).to.equal(`${COMPUTER_NAME} won!`);
     });
 
+    it('Computer moves to central cell if it possible', () => {
+        const game = new GameBuilder()
+            .withBoardState(`
+                . x .
+                . . .
+                . . .`)
+            .build();
+        game.createComputerMove();
+        const board = game.getState();
+        expect(count(board, USER_MOVE_SYMBOL)).to.equal(1);
+        expect(count(board, COMPUTER_MOVE_SYMBOL)).to.equal(1);
+        expect(board[1][1]).to.equal(COMPUTER_MOVE_SYMBOL);
+    });
+
     it('Returns game board size', () => {
         const size = game.getSize();
 
