@@ -243,6 +243,22 @@ describe('Game', () => {
         expect(board[2][0]).to.equal(COMPUTER_MOVE_SYMBOL);
     });
 
+    it('Computer moves to win by horizontal', () => {
+        const game = new GameBuilder()
+            .withBoardState(`
+                . . .
+                x x .
+                o . o`)
+            .build();
+        game.createComputerMove();
+        const board = game.getState();
+        expect(count(board, USER_MOVE_SYMBOL)).to.equal(2);
+        expect(count(board, COMPUTER_MOVE_SYMBOL)).to.equal(3);
+        expect(board[2][1]).to.equal(COMPUTER_MOVE_SYMBOL);
+        const state = game.checkGame();
+        expect(state).to.equal(`${COMPUTER_NAME} won!`);
+    });
+
     it('Returns game board size', () => {
         const size = game.getSize();
 

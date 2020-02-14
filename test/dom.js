@@ -95,7 +95,7 @@ describe('DOM controller', () => {
         document.querySelector('table td').click();
         const text = document.querySelector('table td').textContent;
 
-        expect(text).to.be.equal('×');
+        expect(text).to.be.equal('x');
     });
 
     it('Makes computer move right after users move', () => {
@@ -111,7 +111,7 @@ describe('DOM controller', () => {
 
     it('Creates status text below table is someone wins', () => {
         const game = createGame([
-            ['×', '×', ''],
+            ['x', 'x', ''],
             ['', '', ''],
             ['', '', '']
         ]);
@@ -127,7 +127,7 @@ describe('DOM controller', () => {
 
     it('Creates clear button if someone wins', () => {
         const game = createGame([
-            ['×', '×', ''],
+            ['x', 'x', ''],
             ['', '', ''],
             ['', '', '']
         ]);
@@ -144,7 +144,7 @@ describe('DOM controller', () => {
 
     it('Clears table on button click', () => {
         const game = createGame([
-            ['×', '×', ''],
+            ['x', 'x', ''],
             ['', '', ''],
             ['', '', '']
         ]);

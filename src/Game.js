@@ -30,12 +30,12 @@ export default class Game {
         this._board = cloneDeep(INITIAL_GAME_BOARD);
     }
 
-    acceptUserMove(x, y) {
+    acceptUserMove(x, y, symbol = USER_MOVE_SYMBOL) {
         if (!this._isCellFree(x, y)) {
             return this._throwException('cell is already taken');
         }
-        this._updateHistory(this._userName, x, y);
-        this._updateBoard(x, y);
+        this._updateHistory(symbol === USER_MOVE_SYMBOL ? this._userName : this._computerName, x, y);
+        this._updateBoard(x, y, {symbol});
     }
 
     createComputerMove() {
@@ -47,10 +47,7 @@ export default class Game {
             [x, y] = this._getCoordinatesToPreventUserWin();
         }
 
-        this._updateHistory(this._computerName, x, y);
-        this._updateBoard(x, y, {
-            symbol: this._computerMoveSymbol
-        });
+        this.acceptUserMove(x, y, COMPUTER_MOVE_SYMBOL)
     }
 
     isWinner(player) {
