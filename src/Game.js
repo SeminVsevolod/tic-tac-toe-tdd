@@ -92,7 +92,9 @@ export default class Game {
 
     _checkIsUserWillWinNextMove() {
         // check horizontally win
-        return this._board.some(this._callbackRowWithTwoUserMovesAndWithFreeCell);
+
+        return this._board.some(this._callbackRowWithTwoUserMovesAndWithFreeCell) ||
+            this._checkIsColumnWithTwoUserMovesAndWithFreeCell();
     }
 
     _callbackRowWithTwoUserMovesAndWithFreeCell(row) {
@@ -100,21 +102,50 @@ export default class Game {
         && row.reduce((count, cell) => cell === '' ? ++count : count, 0) === 1;
     }
 
+    _checkIsColumnWithTwoUserMovesAndWithFreeCell() {
+        const range = [...Array(this._fieldSize).keys()];
+
+        return range.some((column, columnIndex) =>
+            this._board.reduce((count, row) =>
+                row[columnIndex] === USER_MOVE_SYMBOL ? ++count : count, 0) === 2
+            && this._board.reduce((count, row) =>
+                row[columnIndex] === '' ? ++count : count, 0) === 1);
+    }
+
     _getCoordinatesToPreventUserWin() {
-        // prevent horizontally win
-        let x = this._board.findIndex(this._callbackRowWithTwoUserMovesAndWithFreeCell);
-        let y = null;
-        if (~x) {
-            y = this._board[x].findIndex(cell => cell === '');
-        } else {
-            this._throwException('cannot find row where user will win')
-        }
+        try {
+            // prevent horizontally win
+            let x = this._board.findIndex(this._callbackRowWithTwoUserMovesAndWithFreeCell);
+            let y = null;
+            if (~x) {
+                y = this._board[x].findIndex(cell => cell === '');
+            } else {
+                // prevent vertically win
+                const range = [...Array(this._fieldSize).keys()];
 
-        if (y === -1 || y === null) {
-            this._throwException('cannot find cell where user will win')
-        }
+                y = range.findIndex((column, columnIndex) =>
+                    this._board.reduce((count, row) =>
+                        row[columnIndex] === USER_MOVE_SYMBOL ? ++count : count, 0) === 2
+                    && this._board.reduce((count, row) =>
+                        row[columnIndex] === '' ? ++count : count, 0) === 1);
 
-        return [x, y];
+                if (~y) {
+                    x = this._board.findIndex(row => row[y] === '');
+                }
+            }
+
+            if (x === -1 || x === null) {
+                this._throwException('cannot find row where user will win')
+            }
+
+            if (y === -1 || y === null) {
+                this._throwException('cannot find cell where user will win')
+            }
+
+            return [x, y];
+        } catch (e) {
+            console.warn('_getCoordinatesToPreventUserWin error->',e);
+        }
     }
 
     _getFreeRandomCoordinates() {
