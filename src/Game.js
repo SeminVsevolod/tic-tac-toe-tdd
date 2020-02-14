@@ -92,10 +92,10 @@ export default class Game {
 
     _checkIsUserWillWinNextMove() {
         // check horizontally win
-
         return this._board.some(this._callbackRowWithTwoUserMovesAndWithFreeCell)
             || this._checkIsColumnWithTwoUserMovesAndWithFreeCell()
-            || this._checkIsMainDiagonalWithTwoUserMovesAndWithFreeCell();
+            || this._checkIsMainDiagonalWithTwoUserMovesAndWithFreeCell()
+            || this._checkIsSecondaryDiagonalWithTwoUserMovesAndWithFreeCell();
     }
 
     _callbackRowWithTwoUserMovesAndWithFreeCell(row) {
@@ -117,7 +117,14 @@ export default class Game {
         const range = this._getRange();
 
         return range.reduce((count, rangeIndex) => this._board[rangeIndex][rangeIndex] === USER_MOVE_SYMBOL ? ++count : count, 0) === 2
-            || range.reduce((count, rangeIndex) => this._board[rangeIndex][rangeIndex] === '' ? ++count : count, 0) === 1;
+            && range.reduce((count, rangeIndex) => this._board[rangeIndex][rangeIndex] === '' ? ++count : count, 0) === 1;
+    }
+
+    _checkIsSecondaryDiagonalWithTwoUserMovesAndWithFreeCell() {
+        const range = this._getRange();
+
+        return range.reduce((count, rangeIndex) => this._board[rangeIndex][Math.abs(rangeIndex - 2)] === USER_MOVE_SYMBOL ? ++count : count, 0) === 2
+            && range.reduce((count, rangeIndex) => this._board[rangeIndex][Math.abs(rangeIndex - 2)] === '' ? ++count : count, 0) === 1;
     }
 
     _getCoordinatesToPreventUserWin() {
@@ -141,7 +148,13 @@ export default class Game {
                     x = this._board.findIndex(row => row[y] === '');
                 } else {
                     // prevent main diagonal win
-                    x = y = range.findIndex((columnIndex) => this._board[columnIndex][columnIndex] === '');
+                    if (this._checkIsMainDiagonalWithTwoUserMovesAndWithFreeCell()) {
+                        x = y = range.findIndex((columnIndex) => this._board[columnIndex][columnIndex] === '');
+                    } else if (this._checkIsSecondaryDiagonalWithTwoUserMovesAndWithFreeCell()) {
+                        // prevent secondary diagonal win
+                        x = range.findIndex((columnIndex) => this._board[columnIndex][Math.abs(columnIndex - 2)] === '');
+                        y = Math.abs(x - 2);
+                    }
                 }
             }
 
