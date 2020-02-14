@@ -30,10 +30,40 @@ class DomController {
         this.lastClickedIndices = [row, col];
         try {
             this._makeUserMove(row, col);
+            const continues = this._checkContinue();
+            if (!continues) return;
+
             this._makeComputerMove();
+            this._checkContinue();
         } catch (e) {
             window.alert(e.message);
         }
+    }
+
+    _checkContinue() {
+        const state = this.game.checkGame();
+
+        if (state !== 'continue') {
+            const status = this._createNode('div', {
+                text: state,
+                id: 'status'
+            });
+
+            this.rootNode.appendChild(status);
+            return false;
+        }
+
+        return true;
+    }
+
+    _createNode(tag, config = {}) {
+        const {text, id} = config;
+        const node = document.createElement(tag);
+        const txt = document.createTextNode(text);
+        node.appendChild(txt);
+
+        if (!!id) node.id = id;
+        return node;
     }
 
     _makeUserMove(row, col) {
