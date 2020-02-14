@@ -40,7 +40,12 @@ export default class Game {
 
     createComputerMove() {
         if (this._getFreeCellsCount() === 0) return this._throwException('no cells available');
-        const [x, y] = this._getFreeRandomCoordinates();
+        let [x, y] = this._getFreeRandomCoordinates();
+
+        // prevent user win next move
+        if (this._checkIsUserWillWinNextMove()) {
+            [x, y] = this._getCoordinatesToPreventUserWin();
+        }
 
         this._updateHistory(this._computerName, x, y);
         this._updateBoard(x, y, {
@@ -83,6 +88,33 @@ export default class Game {
     _checkCellEqual(symbol) {
         return (i, j) =>
             this._board[i][j] === symbol;
+    }
+
+    _checkIsUserWillWinNextMove() {
+        // check horizontally win
+        return this._board.some(this._callbackRowWithTwoUserMovesAndWithFreeCell);
+    }
+
+    _callbackRowWithTwoUserMovesAndWithFreeCell(row) {
+        return row.reduce((count, cell) => cell === USER_MOVE_SYMBOL ? ++count : count, 0) === 2
+        && row.reduce((count, cell) => cell === '' ? ++count : count, 0) === 1;
+    }
+
+    _getCoordinatesToPreventUserWin() {
+        // prevent horizontally win
+        let x = this._board.findIndex(this._callbackRowWithTwoUserMovesAndWithFreeCell);
+        let y = null;
+        if (~x) {
+            y = this._board[x].findIndex(cell => cell === '');
+        } else {
+            this._throwException('cannot find row where user will win')
+        }
+
+        if (y === -1 || y === null) {
+            this._throwException('cannot find cell where user will win')
+        }
+
+        return [x, y];
     }
 
     _getFreeRandomCoordinates() {
