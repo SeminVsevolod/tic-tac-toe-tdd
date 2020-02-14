@@ -3,15 +3,7 @@ import sinon from 'sinon';
 import Game from '../src/Game';
 import GameBuilder from './GameBuilder';
 
-const USER_NAME = 'user';
-const COMPUTER_NAME = 'computer';
-const USER_MOVE_SYMBOL = '×';
-const COMPUTER_MOVE_SYMBOL = 'o';
-const INITIAL_GAME_BOARD = [
-    ['', '', ''],
-    ['', '', ''],
-    ['', '', '']
-];
+import {COMPUTER_MOVE_SYMBOL, COMPUTER_NAME, INITIAL_GAME_BOARD, USER_MOVE_SYMBOL, USER_NAME} from '../src/const';
 
 /**
  * Fills all the cells with user's symbol except last
@@ -167,7 +159,6 @@ describe('Game', () => {
                 . x .
                 x . .`)
             .build();
-
         const userWon = game.isWinner(USER_NAME);
         expect(userWon).to.equal(true);
     });
@@ -195,7 +186,7 @@ describe('Game', () => {
         const state = game.checkGame();
         expect(state).to.equal(`continue`);
     });
-
+    
     it('Returns game board size', () => {
         const size = game.getSize();
 
